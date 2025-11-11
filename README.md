@@ -60,3 +60,17 @@ Finally, set your site's public URL (make sure to include `https://`):
 ```bash
 PUBLIC_URL="https://example.com"
 ```
+
+
+# DOCKER: build and push to docker.
+docker build -t poltr-front .
+docker login
+docker tag poltr-front nikwyss/poltr-front:latest
+docker push nikwyss/poltr-front:latest
+
+# Run the Docker image
+docker run -d -p 4321:4321 nikwyss/poltr-front:latest
+
+# Or pull and run directly from Docker Hub
+docker pull nikwyss/poltr-front:latest
+docker run -d -p 4321:4321 nikwyss/poltr-front:latest
