@@ -1,90 +1,25 @@
-import { decodeBase64 } from "@oslojs/encoding";
-import { createLocalhostATProtoOAuthClient, ATProtoOAuthClient } from "./atproto";
-import { envvar, joinURIBaseAndPath } from "./utils";
+import { encodeBase64urlNoPadding } from '@oslojs/encoding';
+import { generateRandomString } from './utils';
 
-import type { CryptoKeyPairWithId } from "./atproto";
-
-export function productionOAuthClientId(): string {
-	const publicURL = envvar("PUBLIC_URL");
-	if (publicURL === null) {
-		throw new Error("Public URL not defined");
-	}
-	return joinURIBaseAndPath(publicURL, "/oauth/client-metadata.json");
+export interface OAuthState {
+  state: string;
+  codeVerifier: string;
+  issuer: string;
 }
 
-export function productionOAuthRedirectURI(): string {
-	const publicURL = envvar("PUBLIC_URL");
-	if (publicURL === null) {
-		throw new Error("Public URL not defined");
-	}
-	return joinURIBaseAndPath(publicURL, "/login/callback");
+export function generatePKCECodeVerifier(): string {
+  const randomValues = new Uint8Array(32);
+  crypto.getRandomValues(randomValues);
+  return encodeBase64urlNoPadding(randomValues);
 }
 
-export async function createOAuthClient(
-	authorizationServerIssuer: string,
-): Promise<ATProtoOAuthClient> {
-	if (import.meta.env.DEV) {
-		const client = createLocalhostATProtoOAuthClient(
-			authorizationServerIssuer,
-			"http://[::1]:4321/login/callback",
-			["transition:generic"],
-		);
-		return client;
-	}
-	const keyPair = await getOAuthKeyPair();
-	if (keyPair === null) {
-		throw new Error("OAuth key not defined");
-	}
-	const client = new ATProtoOAuthClient(
-		authorizationServerIssuer,
-		productionOAuthClientId(),
-		productionOAuthRedirectURI(),
-		keyPair,
-	);
-	return client;
+export function generateState(): string {
+  return generateRandomString(32);
 }
 
-const getOAuthKeyPairPromise = new Promise<CryptoKeyPairWithId | null>(async (resolve) => {
-	const privateKeyBase64 = envvar("OAUTH_PRIVATE_KEY");
-	const publicKeyBase64 = envvar("OAUTH_PUBLIC_KEY");
-	const keyPairId = envvar("OAUTH_KEY_PAIR_ID");
-
-	if (privateKeyBase64 === null || publicKeyBase64 === null || keyPairId === null) {
-		return resolve(null);
-	}
-
-	const derPrivateKey = decodeBase64(privateKeyBase64);
-	const privateKey = await crypto.subtle.importKey(
-		"pkcs8",
-		derPrivateKey,
-		{
-			name: "ECDSA",
-			namedCurve: "P-256",
-		},
-		true,
-		["sign"],
-	);
-
-	const derPublicKey = decodeBase64(publicKeyBase64);
-	const publicKey = await crypto.subtle.importKey(
-		"spki",
-		derPublicKey,
-		{
-			name: "ECDSA",
-			namedCurve: "P-256",
-		},
-		true,
-		["verify"],
-	);
-
-	const keyPair: CryptoKeyPairWithId = {
-		privateKey,
-		publicKey,
-		id: keyPairId,
-	};
-	return resolve(keyPair);
-});
-
-export async function getOAuthKeyPair(): Promise<CryptoKeyPairWithId | null> {
-	return getOAuthKeyPairPromise;
+export async function generatePKCECodeChallenge(codeVerifier: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(codeVerifier);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return encodeBase64urlNoPadding(new Uint8Array(hash));
 }

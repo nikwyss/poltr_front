@@ -1,76 +1,73 @@
-# AT Protocol OAuth example
+# React + TypeScript + Vite
 
-An example implementation of an AT Protocol (BlueSky) OAuth client using Astro. This example does not use the AT Protocol SDK. It also doesn't use any Node-specific APIs (except for `process.env`) and should run in other runtimes (including Cloudflare Workers).
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Not tested, but it should work PDS and authorization servers not hosted by BlueSky.
+Currently, two official plugins are available:
 
-## Initialize locally
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-Install dependencies and start the server at port 4321. If you'd like to use a different port, change all occurrences of port 4321 in the codebase.
+## React Compiler
 
-```
-pnpm i
-pnpm dev
-```
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Deploying to production
+## Expanding the ESLint configuration
 
-This example uses confidential OAuth clients when deployed.
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-The AT Protocol requires confidential clients to use signed JWTs for authentication and this example uses JWTs signed with ECDSA with the P-256 curve. Generate a private and public key with `openssl`:
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-```
-openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 -pkeyopt ec_param_enc:named_curve | openssl pkcs8 -topk8 -nocrypt -outform pem > oauth-private-key.pem
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-openssl ec -in oauth-private-key.pem -pubout > oauth-public-key.pem
-```
-
-This should generate 2 files: `oauth-private-key.pem` and `oauth-public-key.pem`.
-
-```
------BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgM5BHQhVKR9STxiJG
-IE+Jb/yxQvftew9HknEQUGaRsSqhRANCAAQH3r8GHE27Gsy0sHQRUSo9yqu8r58F
-nBuWEIaxldS8he/3ZVHUim7qXe9knTa1O2aHsIVTnC8FiZ6J0tvJecE8
------END PRIVATE KEY-----
-```
-
-```
------BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEB96/BhxNuxrMtLB0EVEqPcqrvK+f
-BZwblhCGsZXUvIXv92VR1Ipu6l3vZJ02tTtmh7CFU5wvBYmeidLbyXnBPA==
------END PUBLIC KEY-----
-```
-
-Remove the header and footer from the `.pem` files and set the base64 encoded string as `OAUTH_PRIVATE_KEY` for the private key and as `OAUTH_PUBLIC_KEY` for the public key.
-
-```bash
-OAUTH_PRIVATE_KEY="MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgM5BHQhVKR9STxiJGIE+Jb/yxQvftew9HknEQUGaRsSqhRANCAAQH3r8GHE27Gsy0sHQRUSo9yqu8r58FnBuWEIaxldS8he/3ZVHUim7qXe9knTa1O2aHsIVTnC8FiZ6J0tvJecE8"
-OAUTH_PUBLIC_KEY="MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEB96/BhxNuxrMtLB0EVEqPcqrvK+fBZwblhCGsZXUvIXv92VR1Ipu6l3vZJ02tTtmh7CFU5wvBYmeidLbyXnBPA=="
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-Also set a `OAUTH_KEY_PAIR_ID` environment variable. This will be the public ID of your key pair and does not need to be unguessable.
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```bash
-OAUTH_KEY_PAIR_ID="banana"
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-Finally, set your site's public URL (make sure to include `https://`):
-
-```bash
-PUBLIC_URL="https://example.com"
-```
-
-
-# DOCKER: build and push to docker.
-docker build -t poltr-front .
-docker login
-docker tag poltr-front nikwyss/poltr-front:latest
-docker push nikwyss/poltr-front:latest
-
-# Run the Docker image
-docker run -d -p 4321:4321 nikwyss/poltr-front:latest
-
-# Or pull and run directly from Docker Hub
-docker pull nikwyss/poltr-front:latest
-docker run -d -p 4321:4321 nikwyss/poltr-front:latest
