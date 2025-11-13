@@ -133,7 +133,7 @@ export default function Register() {
               type="text"
               value={formData.handle}
               onChange={(e) => setFormData({ ...formData, handle: e.target.value })}
-              placeholder={`username.${import.meta.env.VITE_PDS_URL_SHORT || 'pds.poltr.info'}`}
+              placeholder={`username.${import.meta.env.VITE_PDS_URL_SHORT || 'poltr.info'}`}
               required
               disabled={loading}
               style={{
