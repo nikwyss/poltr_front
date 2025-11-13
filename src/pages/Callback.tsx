@@ -37,16 +37,26 @@ export default function Callback() {
         const session = result.session;
         const did = session.did;
         
-        // Try to get profile info
-        let handle = did;
-        let displayName = 'User';
+        // Get the actual handle and profile info
+        let handle: string = did;
+        let displayName: string = 'User';
         
         try {
-          // The session object contains the DID, we can extract handle from it if available
-          handle = did.replace('did:plc:', '').substring(0, 10) + '...';
-          displayName = handle;
+          // Fetch profile from PDS to get actual handle
+          const profileUrl = `https://bsky.social/xrpc/com.atproto.repo.describeRepo?repo=${did}`;
+          const profileResponse = await fetch(profileUrl);
+          
+          if (profileResponse.ok) {
+            const profileData = await profileResponse.json();
+            handle = profileData.handle || did;
+            displayName = profileData.displayName || handle;
+          }
         } catch (e) {
-          console.log('Could not fetch profile');
+          console.log('Could not fetch profile, using DID');
+          // Fallback to a short display of the DID
+          const didShort = did.replace('did:plc:', '').substring(0, 10) + '...';
+          handle = didShort;
+          displayName = didShort;
         }
         
         // Store user info and redirect to home

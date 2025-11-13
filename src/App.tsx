@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Callback from './pages/Callback';
 import Home from './pages/Home';
+import ProposalsSearch from './pages/votings/Search';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/callback" element={<Callback />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/proposals" element={<ProposalsSearch />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

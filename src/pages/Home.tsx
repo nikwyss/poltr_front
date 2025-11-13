@@ -41,21 +41,42 @@ export default function Home() {
         <p><strong>DID:</strong> {user.did}</p>
         <p><strong>Handle:</strong> {user.handle}</p>
       </div>
-      <button
-        onClick={handleLogout}
-        style={{
-          marginTop: '30px',
-          padding: '12px 24px',
-          fontSize: '16px',
-          backgroundColor: '#ff4444',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
-      >
-        Logout
-      </button>
+      
+      <div style={{
+        marginTop: '30px',
+        display: 'flex',
+        gap: '16px'
+      }}>
+        <button
+          onClick={() => navigate('/proposals')}
+          style={{
+            padding: '12px 24px',
+            fontSize: '16px',
+            backgroundColor: '#0085ff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          View Proposals
+        </button>
+        
+        <button
+          onClick={handleLogout}
+          style={{
+            padding: '12px 24px',
+            fontSize: '16px',
+            backgroundColor: '#ff4444',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 }
