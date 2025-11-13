@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getOAuthClient } from '../lib/oauthClient';
 
 export default function Login() {
+  const navigate = useNavigate();
   const [handle, setHandle] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -44,7 +46,7 @@ export default function Login() {
             type="text"
             value={handle}
             onChange={(e) => setHandle(e.target.value)}
-            placeholder="username.bsky.social"
+            placeholder={`username.${import.meta.env.VITE_PDS_URL_SHORT || 'pds.poltr.ch'}`}
             required
             disabled={loading}
             style={{
@@ -78,11 +80,30 @@ export default function Login() {
             color: 'white',
             border: 'none',
             borderRadius: '4px',
-            cursor: loading ? 'not-allowed' : 'pointer'
+            cursor: loading ? 'not-allowed' : 'pointer',
+            marginBottom: '16px'
           }}
         >
           {loading ? 'Resolving...' : 'Login'}
         </button>
+        
+        <div style={{ textAlign: 'center' }}>
+          <button
+            type="button"
+            onClick={() => navigate('/register')}
+            disabled={loading}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#0085ff',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              fontSize: '14px'
+            }}
+          >
+            Don't have an account? Register
+          </button>
+        </div>
       </form>
     </div>
   );
