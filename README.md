@@ -1,6 +1,6 @@
 # Poltr.ch Frontend
 
-A modern React + TypeScript frontend client for [poltr.ch](https://poltr.ch) with AT Protocol (Bluesky) OAuth authentication.
+A modern React + TypeScript frontend client for [pds.poltr.info](https://poltr.info) with AT Protocol (Bluesky) OAuth authentication.
 
 ## Features
 
