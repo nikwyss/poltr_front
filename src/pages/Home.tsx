@@ -3,18 +3,24 @@ import { useAuth } from '../lib/AuthContext';
 import { useEffect } from 'react';
 
 export default function Home() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       navigate('/');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, loading, navigate]);
 
-  if (!user) {
-    return null;
+  if (loading) {
+    return (
+      <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',fontFamily:'sans-serif'}}>
+        Restoring session...
+      </div>
+    );
   }
+
+  if (!user) return null;
 
   const handleLogout = () => {
     logout();

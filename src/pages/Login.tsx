@@ -16,7 +16,7 @@ export default function Login() {
     try {
       const client = await getOAuthClient();
       
-      // Initiate login - this will redirect to Bluesky
+      // Initiate login - this will redirect to Poltr
       await client.signIn(handle, {
         signal: new AbortController().signal,
       });
@@ -35,11 +35,11 @@ export default function Login() {
       minHeight: '100vh',
       padding: '20px'
     }}>
-      <h1>Login with Bluesky</h1>
+      <h1>atproto-Login</h1>
       <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
         <div style={{ marginBottom: '20px' }}>
           <label htmlFor="handle" style={{ display: 'block', marginBottom: '8px' }}>
-            Enter your Bluesky handle:
+            Enter your Atproto handle:
           </label>
           <input
             id="handle"

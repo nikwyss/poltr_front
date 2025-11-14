@@ -12,20 +12,20 @@ interface ProposalWithMetadata {
 }
 
 export default function ProposalsSearch() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [proposals, setProposals] = useState<ProposalWithMetadata[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // loading proposals
   const [error, setError] = useState('');
 
   useEffect(() => {
+    if (authLoading) return; // wait for auth restoration
     if (!isAuthenticated) {
       navigate('/');
       return;
     }
-
     loadProposals();
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, authLoading, navigate]);
 
   const loadProposals = async () => {
     if (!user) return;
@@ -78,9 +78,14 @@ export default function ProposalsSearch() {
     }
   };
 
-  if (!isAuthenticated || !user) {
-    return null;
+  if (authLoading) {
+    return (
+      <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh'}}>
+        Restoring session...
+      </div>
+    );
   }
+  if (!isAuthenticated || !user) return null;
 
   return (
     <div style={{

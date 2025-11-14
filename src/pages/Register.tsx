@@ -294,7 +294,6 @@ export default function Register() {
         maxWidth: '500px',
         border: '1px solid #ffc107'
       }}>
-        <strong>Note:</strong> Account creation requirements vary by PDS. Bluesky currently requires an invite code.
       </div>
     </div>
   );
