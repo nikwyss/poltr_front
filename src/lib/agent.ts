@@ -34,18 +34,26 @@ export async function getAuthenticatedAgent(): Promise<AtpAgent> {
       did = u.did;
       handle = u.handle;
     } catch {
-      // ignore parse errors; we’ll fall back to restore()
+      // ignore parse errors; we’ll fall back to restore
     }
   }
 
   // Restore the OAuth session from IndexedDB.
-  // Prefer restoring with known DID; fall back to the latest session.
+  // Only call restore(did) if did is defined; otherwise use origin as audience.
   let session: any = null;
   try {
-    session = await client.restore(did);
+    if (did) {
+      session = await client.restore(did);
+    } else {
+      session = await client.restore(window.location.origin);
+    }
   } catch {
-    // If restore(did) rejects (e.g., bad DID), try generic restore
-    session = await client.restore().catch(() => null);
+    // optional secondary attempt (useful if audience mismatch)
+    try {
+      session = await client.restore(window.location.origin);
+    } catch {
+      session = null;
+    }
   }
 
   if (!session) {
@@ -66,14 +74,15 @@ export async function getAuthenticatedAgent(): Promise<AtpAgent> {
 
   const agent = new AtpAgent({ service: pdsUrl });
 
-  // Attach session tokens if the library exposes them (shape is internal)
+  // Attach session using the public API (readonly property cannot be assigned)
   if (session.accessToken) {
-    agent.session = {
-      did,
-      handle,
-      accessJwt: session.accessToken,
-      refreshJwt: session.refreshToken,
-    } as any;
+    await agent.resumeSession({
+      did,                            // guaranteed string
+      handle: handle ?? '',           // ensure string
+      accessJwt: String(session.accessToken),
+      // refreshJwt may be optional depending on flow
+      refreshJwt: session.refreshToken ? String(session.refreshToken) : undefined,
+    } as any);
   }
 
   return agent;
