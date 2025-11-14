@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Callback from './pages/Callback';
 import Home from './pages/Home';
-import ProposalsSearch from './pages/votings/Search';
+import ProposalsSearch from './pages/votings/Proposals';
 
 function App() {
   return (

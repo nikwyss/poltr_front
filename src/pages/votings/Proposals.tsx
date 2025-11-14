@@ -34,8 +34,11 @@ export default function ProposalsSearch() {
     setError('');
 
     try {
+
+      const governance_account_did = import.meta.env.VITE_PDS_GOVERNANCE_ACCOUNT_DID;
       const response = await listRecords(
-        user.did,
+        governance_account_did,
+        // user.did,
         'app.ch.poltr.vote.proposal',
         100
       );
