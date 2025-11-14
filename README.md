@@ -1,11 +1,11 @@
 # Poltr.ch Frontend
 
-A modern React + TypeScript frontend client for [poltr.info](https://poltr.info) with AT Protocol (Bluesky) OAuth authentication.
+A modern React + TypeScript frontend client for [poltr.info](https://poltr.info) with AT Protocol OAuth authentication.
 
 ## Features
 
 - 🔐 **Browser-based OAuth** - Secure authentication using `@atproto/oauth-client-browser`
-- 🌐 **AT Protocol Support** - Works with Bluesky and any ATProto server
+- 🌐 **AT Protocol Support** - Works with Poltr, Bluesky and any ATProto server
 - ⚡ **Vite + React** - Fast development with hot module replacement
 - 🔒 **PKCE Flow** - Public client OAuth with Proof Key for Code Exchange
 - 💾 **IndexedDB Storage** - Secure token management in the browser
