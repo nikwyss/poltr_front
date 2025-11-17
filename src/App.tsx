@@ -4,7 +4,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Callback from './pages/Callback';
 import Home from './pages/Home';
-import ProposalsSearch from './pages/votings/Proposals';
+// import ProposalsFeed from './pages/votings/ProposalsListFeed';
+import ProposalsSearch from './pages/votings/ProposalsListRecords';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/callback" element={<Callback />} />
           <Route path="/home" element={<Home />} />
           <Route path="/proposals" element={<ProposalsSearch />} />
+          {/* <Route path="/feed" element={<ProposalsFeed />} /> */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
