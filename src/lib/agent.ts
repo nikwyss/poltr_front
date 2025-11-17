@@ -96,12 +96,12 @@ export async function listRecords(
         });
 
         // Fetch likes for this record
-        const likes = await agent.app.bsky.feed.getLikes({
-          uri: record.uri,
-          limit: 100,
-        });
-        hydrated.data.likes = likes.data;
-        hydrated.data.liked = likes.data.likes.some((like: any) => like.actor.did === agent.did);
+        // const likes = await agent.app.bsky.feed.getLikes({
+        //   uri: record.uri,
+        //   limit: 100,
+        // });
+        // hydrated.data.likes = likes.data;
+        // hydrated.data.liked = likes.data.likes.some((like: any) => like.actor.did === agent.did);
         
         console.log('Hydrated record:', hydrated, record) ;
         return hydrated.data;

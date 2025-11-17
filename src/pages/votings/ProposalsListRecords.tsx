@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/AuthContext';
-import { getAuthenticatedAgent, listRecords } from '../../lib/agent';
+import { listRecords } from '../../lib/agent';
 import { validateProposal } from '../../lib/lexicons';
 import type { ProposalRecord } from '../../lib/lexicons';
-import type { Agent } from '@atproto/api';
+// import type { Agent } from '@atproto/api';
 
 interface ProposalWithMetadata {
   uri: string;
@@ -71,25 +71,25 @@ export default function ProposalsSearch() {
     }
   };
 
-  const likeRecord = (uri: string, cid: string) => {
-    console.log("Toggling like for proposal:", uri);
-    getAuthenticatedAgent().then((agent: Agent) => {
-      agent.assertDid; // string
-      return agent.like(uri, cid)
-    }).catch((err) => {
-      console.error("Error liking proposal:", uri, err);
-    });
-  };
+  // const likeRecord = (uri: string, cid: string) => {
+  //   console.log("Toggling like for proposal:", uri);
+  //   getAuthenticatedAgent().then((agent: Agent) => {
+  //     agent.assertDid; // string
+  //     return agent.like(uri, cid)
+  //   }).catch((err) => {
+  //     console.error("Error liking proposal:", uri, err);
+  //   });
+  // };
 
-  const unlikeRecord = (uri: string, cid: string) => {
-    console.log("Toggling unlike for proposal:", uri);
-    getAuthenticatedAgent().then((agent: Agent) => {
-      agent.assertDid; // string
-      return agent.unlike(uri, cid)
-    }).catch((err) => {
-      console.error("Error unliking proposal:", uri, err);
-    });
-  }
+  // const unlikeRecord = (uri: string, cid: string) => {
+  //   console.log("Toggling unlike for proposal:", uri);
+  //   getAuthenticatedAgent().then((agent: Agent) => {
+  //     agent.assertDid; // string
+  //     return agent.unlike(uri, cid)
+  //   }).catch((err) => {
+  //     console.error("Error unliking proposal:", uri, err);
+  //   });
+  // }
 
   const formatDate = (dateStr: string) => {
     try {
@@ -254,11 +254,11 @@ export default function ProposalsSearch() {
 
                   <button
                     type="button"
-                    aria-pressed={!!proposal.liked}
-                    aria-label={!!proposal.liked ? 'Remove like' : 'Like proposal'}
+                    // aria-pressed={!!proposal.liked}
+                    // aria-label={!!proposal.liked ? 'Remove like' : 'Like proposal'}
                     onClick={(event) => {
                       event.stopPropagation();
-                      proposal.liked ? likeRecord(proposal.uri, proposal.cid) : unlikeRecord(proposal.uri, proposal.cid);
+                      // proposal.liked ? likeRecord(proposal.uri, proposal.cid) : unlikeRecord(proposal.uri, proposal.cid);
                     }}
                     style={{
                       background: 'none',
@@ -270,7 +270,7 @@ export default function ProposalsSearch() {
                       transition: 'color 0.2s'
                     }}
                   >
-                    {proposal.liked  ? '\u2764' : '\u2661'}
+                    {0  ? '\u2764' : '\u2661'}
                     {/* {proposal.cid} */}
                   </button>
                 </div>
